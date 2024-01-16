@@ -1,8 +1,10 @@
-﻿namespace Scribble_hax.Controllers.Board
+﻿using System.Reflection;
+
+namespace Scribble_hax.Controllers.Board
 {
     public class BonusTileReader
     {
-        private string bonusTileBoardFilePath = ".\\Scribble hax\\bin"; 
+        private string bonusTileBoardFilePath = ".\\Data\\board.txt"; 
         public BonusTileReader() { 
             
         }
@@ -21,11 +23,21 @@
                 var columnIndex = 0;
                 foreach (var tile in singleLineBonuses)
                 {
+                    if (tile != "n/a")
+                    {
+                        bonusTiles[lineIndex, columnIndex] = tile;
+                    }
+                    else
+                    {
+                        bonusTiles[lineIndex, columnIndex] = string.Empty;
+                    }
 
                     columnIndex++;
                 }
                 lineIndex++;
             }
+
+            return bonusTiles;
         }
     }
 }

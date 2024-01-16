@@ -1,0 +1,15 @@
+n/a;n/a;n/a;TW;n/a;n/a;TL;n/a;TL;n/a;n/a;TW;n/a;n/a;n/a
+n/a;n/a;DL;n/a;n/a;DW;n/a;n/a;n/a;DW;n/a;n/a;DL;n/a;n/a
+n/a;DL;n/a;n/a;DL;n/a;n/a;n/a;n/a;n/a;DL;n/a;n/a;DL;n/a
+TW;n/a;n/a;TL;n/a;n/a;n/a;DW;n/a;n/a;n/a;TL;n/a;n/a;TW
+n/a;n/a;DL;n/a;n/a;n/a;DL;n/a;DL;n/a;n/a;n/a;DL;n/a;n/a
+n/a;DW;n/a;n/a;n/a;TL;n/a;n/a;n/a;TL;n/a;n/a;n/a;DW;n/a
+TL;n/a;n/a;n/a;DL;n/a;n/a;n/a;n/a;n/a;DL;n/a;n/a;n/a;TL
+n/a;n/a;n/a;DW;n/a;n/a;n/a;*;n/a;n/a;n/a;DW;n/a;n/a;n/a
+TL;n/a;n/a;n/a;DL;n/a;n/a;n/a;n/a;n/a;DL;n/a;n/a;n/a;TL
+n/a;DW;n/a;n/a;n/a;TL;n/a;n/a;n/a;TL;n/a;n/a;n/a;DW;n/a
+n/a;n/a;DL;n/a;n/a;n/a;DL;n/a;DL;n/a;n/a;n/a;DL;n/a;n/a
+TW;n/a;n/a;TL;n/a;n/a;n/a;DW;n/a;n/a;n/a;TL;n/a;n/a;TW
+n/a;DL;n/a;n/a;DL;n/a;n/a;n/a;n/a;n/a;DL;n/a;n/a;DL;n/a
+n/a;n/a;DL;n/a;n/a;DW;n/a;n/a;n/a;DW;n/a;n/a;DL;n/a;n/a
+n/a;n/a;n/a;TW;n/a;n/a;TL;n/a;TL;n/a;n/a;TW;n/a;n/a;n/a
