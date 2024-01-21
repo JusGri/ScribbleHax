@@ -4,7 +4,15 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-start">
+    <h1 class="col-sm-1">Welcome</h1>
+    <div class="scribble-board">
+        @for (var row = 1; row <= 15; row++)
+        {
+            @for (var col = 1; col <= 15; col++)
+            {
+                <div class="board-tile" id="tile-@(row)-@(col)"></div>
+            }
+        }
+    </div>
 </div>

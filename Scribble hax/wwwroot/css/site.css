@@ -20,3 +20,21 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.scribble-board {
+    height: auto;
+    width: 530px;
+    background-color: cornflowerblue;
+    border-radius: 5px;
+    display: grid;
+    grid-template-rows: repeat(15, 30px);
+    grid-template-columns: repeat(15, 30px);
+    gap: 5px;
+    padding: 5px;
+}
+
+.board-tile{
+    background-color:white;
+    color:white;
+    z-index: 1;
+}
