@@ -35,6 +35,27 @@ body {
 
 .board-tile{
     background-color:white;
-    color:white;
+    color:black;
+    text-align: center;
     z-index: 1;
+}
+
+.dl{
+  background-color: #0b79c1;
+}
+
+.dw{
+  background-color: #af4637;
+}
+
+.tl{
+  background-color: #559e22;
+}
+
+.tw{
+  background-color: #dd8e28;
+}
+
+.occupied{
+  background-color: yellow;
 }

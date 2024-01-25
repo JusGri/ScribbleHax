@@ -7,11 +7,11 @@
 <div class="text-start">
     <h1 class="col-sm-1">Welcome</h1>
     <div class="scribble-board">
-        @for (var row = 1; row <= 15; row++)
+        @for (var row = 0; row < 15; row++)
         {
-            @for (var col = 1; col <= 15; col++)
+            @for (var col = 0; col < 15; col++)
             {
-                <div class="board-tile" id="tile-@(row)-@(col)"></div>
+                <div class="board-tile" id="tile-@(row)-@(col)" data-value="@(Model.GameBoard.getTileValue(row,col))">@Model.GameBoard.getTileValue(row, col)</div>
             }
         }
     </div>

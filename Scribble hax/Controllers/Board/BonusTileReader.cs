@@ -4,7 +4,7 @@ namespace Scribble_hax.Controllers.Board
 {
     public class BonusTileReader
     {
-        private string bonusTileBoardFilePath = ".\\Data\\board.txt"; 
+        private string bonusTileBoardFilePath = "..\\Data\\board.txt"; 
         public BonusTileReader() { 
             
         }

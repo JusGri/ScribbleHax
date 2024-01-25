@@ -6,14 +6,39 @@
     public class Board
     {
         private char[,] valuesMatrix;
-        private char[,] bonusMatrix;
+        private string[,] bonusMatrix;
+        private readonly string[] possibleBonuses;
 
+        /// <summary>
+        /// Initializes the board by creating arrays and setting initial values.
+        /// </summary>
         public Board()
         {
             valuesMatrix = new char[15, 15];
-            bonusMatrix = new char[15, 15];
+            possibleBonuses = new string[] { "DL", "DW", "TL", "TW" };
 
             BonusTileReader bonusReader = new BonusTileReader();
+            bonusMatrix = bonusReader.ReadBonusTiles();
+        }
+
+        /// <summary>
+        /// Gets value of a tile from given coordinates.
+        /// </summary>
+        /// <param name="x">Row coordinate</param>
+        /// <param name="y">Column coordinate</param>
+        /// <returns>String which should be displayed on the board tile.</returns>
+        public string getTileValue(int x, int y)
+        {
+            var tileValue = string.Empty;
+            if (valuesMatrix[x, y] != (char)0)
+            {
+                tileValue = valuesMatrix[x, y].ToString();
+            }
+            else if (bonusMatrix[x,y] != string.Empty)
+            {
+                tileValue = bonusMatrix[x, y];
+            }
+            return tileValue;
         }
     }
 }
