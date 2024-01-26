@@ -11,7 +11,7 @@
         {
             @for (var col = 0; col < 15; col++)
             {
-                <div class="board-tile" id="tile-@(row)-@(col)" data-value="@(Model.GameBoard.getTileValue(row,col))">@Model.GameBoard.getTileValue(row, col)</div>
+                <div class="board-tile" id="tile-@(row)-@(col)" data-value="@(Model.Game.GetTileValue(row, col))">@Model.Game.GetTileValue(row, col)</div>
             }
         }
     </div>

@@ -27,7 +27,7 @@
         /// <param name="x">Row coordinate</param>
         /// <param name="y">Column coordinate</param>
         /// <returns>String which should be displayed on the board tile.</returns>
-        public string getTileValue(int x, int y)
+        public string GetTileValue(int x, int y)
         {
             var tileValue = string.Empty;
             if (valuesMatrix[x, y] != (char)0)

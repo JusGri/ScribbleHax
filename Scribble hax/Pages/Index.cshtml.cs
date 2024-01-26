@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Scribble_hax.Controllers.Board;
+using Scribble_hax.Controllers;
 
 namespace Scribble_hax.Pages
 {
@@ -8,12 +8,12 @@ namespace Scribble_hax.Pages
     {
         private readonly ILogger<IndexModel> _logger;
 
-        public readonly Board GameBoard;
+        public readonly GameManager Game;
 
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
-            GameBoard = new Board();
+            Game = new GameManager();
         }
 
         public void OnGet()
