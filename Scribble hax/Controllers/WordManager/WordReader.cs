@@ -31,6 +31,11 @@ public class WordReader
         string line;
         while ((line = reader.ReadLine()) != null)
         {
+            if (line.Length > 15)
+            {
+                //Won't fit on the board
+                continue;
+            }
             words.Add(line);
         }
 

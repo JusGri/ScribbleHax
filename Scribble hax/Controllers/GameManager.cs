@@ -24,6 +24,27 @@
         {
             return gameBoard.GetTileValue(x, y);
         }
+
+        public void GetBestWords(List<char> availableChars)
+        {
+            var availableWords = wordManager.GetAvailableWords(availableChars, getBoardLayout(), );
+
+
+        }
+
+        private Dictionary<(int row, int column), string> getBoardLayout()
+        {
+            var boardLayout = new Dictionary<(int row, int column), string>();
+            for (int row = 0; row < 15; row++)
+            {
+                for (int column = 0; column < 15; column++)
+                {
+                    boardLayout.Add((row,column),gameBoard.GetTileValue(row, column));
+                }
+            }
+
+            return boardLayout;
+        }
     }
 
 }
