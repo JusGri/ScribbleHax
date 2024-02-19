@@ -27,7 +27,7 @@
 
         public void GetBestWords(List<char> availableChars)
         {
-            var availableWords = wordManager.GetAvailableWords(availableChars, getBoardLayout(), );
+            var availableWords = wordManager.GetAvailableWords(availableChars, getBoardLayout());
 
 
         }
