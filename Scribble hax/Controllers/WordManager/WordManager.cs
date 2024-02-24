@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Common;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -37,7 +38,7 @@ namespace Scribble_hax.Controllers.WordManager
         /// <param name="availableCharacters"></param>
         /// <param name="charactersOnTheBoard"></param>
         /// <returns>A dictionary where words are keys and point that you can get for them are values.</returns>
-        public List<ChosenWord> nnnnn(List<char> availableCharacters, Dictionary<(int row,int column), string> charactersOnTheBoard)
+        public List<ChosenWord> GetAvailableWords(List<char> availableCharacters, Dictionary<(int row,int column), string> charactersOnTheBoard)
         {
             List<ChosenWord> availableWords = new List<ChosenWord>();
             //Iterates through each word to check if it can fit on the table somewhere.
@@ -305,23 +306,33 @@ namespace Scribble_hax.Controllers.WordManager
                             continue;
                         }
 
-                        //If it's not emtpty we have to check if they form a word.
+                        //If it's not emtpty we have to check if they form a word. So we build a string that is attached to the 
                         StringBuilder wordCandidateBuilder = new StringBuilder();
                         int wordStart = 0;
                         for(int row = 0; row < 15; row++)
                         {
+                            //If there is a letter on the given row add it to string builder.
                             if (charactersOnTheBoard[(row, column)].Length == 1)
                             {
+                                //If it's the first letter of the builder mark the row as the position where the word starts.
                                 if(wordCandidateBuilder.Length == 0)
                                 {
                                     wordStart = row;
                                 }
+
                                 wordCandidateBuilder.Append(charactersOnTheBoard[(row, column)]);
                             }
+                            //If there is a gap between letters before the chosen word, it mean's that all the letters before it are not connected so we clear the builder.
                             else if (row < word.GetStartRow())
                             {
                                 wordCandidateBuilder.Clear();
                             }
+                            //If it's the letter from the chosen word add it to the string.
+                            else if (row == word.GetStartRow())
+                            {
+                                wordCandidateBuilder.Append(word.GetWord()[wordIndex]);
+                            }
+                            //If there is a gap after the chosen word that means that the word is over so we can break.
                             else
                             {
                                 break;
@@ -339,11 +350,69 @@ namespace Scribble_hax.Controllers.WordManager
                             charactersOnTheBoard.Where(chars => chars.Key.column == column).ToDictionary(k => k.Key.row, v => v.Value));
 
                         word.SetPoints(word.GetPoints() + additionalPoints);
+                        wordIndex++; 
                     }
                 }
                 else
                 {
+                    //Track the index of the letter in the word.
+                    var wordIndex = 0;
+                    for (int row = word.GetStartRow(); row <= word.GetEndRow(); row++)
+                    {
+                        //If the space left and right to the letter of the word are empty check for the next letter.
+                        if ((word.GetStartColumn() + 1 > 14 || charactersOnTheBoard[(row, word.GetStartColumn() + 1)].Length != 1) &&
+                            (word.GetStartColumn() - 1 < 0 || charactersOnTheBoard[(row, word.GetStartColumn() - 1)].Length != 1))
+                        {
+                            wordIndex++;
+                            continue;
+                        }
 
+                        //If it's not emtpty we have to check if they form a word. So we build a string that is attached to the 
+                        StringBuilder wordCandidateBuilder = new StringBuilder();
+                        int wordStart = 0;
+                        for (int column = 0; column < 15; column++)
+                        {
+                            //If there is a letter on the given column add it to string builder.
+                            if (charactersOnTheBoard[(row, column)].Length == 1)
+                            {
+                                //If it's the first letter of the builder mark the row as the position where the word starts.
+                                if (wordCandidateBuilder.Length == 0)
+                                {
+                                    wordStart = row;
+                                }
+
+                                wordCandidateBuilder.Append(charactersOnTheBoard[(row, column)]);
+                            }
+                            //If there is a gap between letters before the chosen word, it mean's that all the letters before it are not connected so we clear the builder.
+                            else if (row < word.GetStartRow())
+                            {
+                                wordCandidateBuilder.Clear();
+                            }
+                            //If it's the letter from the chosen word add it to the string.
+                            else if (row == word.GetStartRow())
+                            {
+                                wordCandidateBuilder.Append(word.GetWord()[wordIndex]);
+                            }
+                            //If there is a gap after the chosen word that means that the word is over so we can break.
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        string wordCandidate = wordCandidateBuilder.ToString();
+                        if (!words.Contains(wordCandidate))
+                        {
+                            wordFailedCheck = true;
+                            break;
+                        }
+
+                        var additionalPoints = CalculatePoints(wordCandidate, wordStart,
+                            charactersOnTheBoard.Where(chars => chars.Key.row == row).ToDictionary(k => k.Key.column, v => v.Value));
+
+                        word.SetPoints(word.GetPoints() + additionalPoints);
+                        wordIndex++;
+                    }
                 }
 
                 if (!wordFailedCheck)
