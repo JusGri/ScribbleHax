@@ -7,8 +7,4 @@
     <RootNamespace>Scribble_hax</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\Enums\" />
-  </ItemGroup>
-
 </Project>

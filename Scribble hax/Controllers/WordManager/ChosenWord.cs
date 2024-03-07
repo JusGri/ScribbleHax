@@ -14,7 +14,7 @@ namespace Scribble_hax.Controllers.WordManager
         private readonly string word;
         private readonly (int row, int column) startCoordinate;
         private readonly (int row, int column) endCoordinate;
-        privaten int pointsForWord;
+        private int pointsForWord;
 
         /// <summary>
         /// Initiates the selected word object.
@@ -123,6 +123,15 @@ namespace Scribble_hax.Controllers.WordManager
         public void SetPoints(int points)
         {
             pointsForWord = points;
+        }
+
+        /// <summary>
+        /// Returns a string of all the needed information for the player to place this word.
+        /// </summary>
+        /// <returns>String of all the info about the word.</returns>
+        public override string ToString()
+        {
+            return $"Word: {word}; \nPoints: {pointsForWord}; \nStart coordinate row: {startCoordinate.row}, column: {startCoordinate.column}; \nEnd coordinate row: {endCoordinate.row}, column: {endCoordinate.column}; \n";
         }
     }
 }

@@ -20,5 +20,13 @@ namespace Scribble_hax.Pages
         {
 
         }
+
+        public IActionResult OnPost() {
+            string response = Request.Form["userResponse"];
+
+            Game.HandleUserInput(response);
+
+            return RedirectToPage();
+        }
     }
 }

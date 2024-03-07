@@ -5,14 +5,25 @@
 }
 
 <div class="text-start">
-    <h1 class="col-sm-1">Welcome</h1>
-    <div class="scribble-board">
-        @for (var row = 0; row < 15; row++)
-        {
-            @for (var col = 0; col < 15; col++)
+    <h1 class="col-sm-4">Words with friends</h1>
+    <div class="scribble-game">
+        <div class="scribble-board">
+            @for (var row = 0; row < 15; row++)
             {
-                <div class="board-tile" id="tile-@(row)-@(col)" data-value="@(Model.Game.GetTileValue(row, col))">@Model.Game.GetTileValue(row, col)</div>
+                @for (var col = 0; col < 15; col++)
+                {
+                    <div class="board-tile" id="tile-@(row)-@(col)" data-value="@(Model.Game.GetTileValue(row, col))">@Model.Game.GetTileValue(row, col)</div>
+                }
             }
-        }
+        </div>
+        <div class="scribble-form">
+            <div>
+                <p class="instructions">@Model.Game.GetInstructions()</p>
+            </div>
+            <form method="post">
+                <input type="text" name="userResponse"/>
+                <input type="submit" />
+            </form>
+        </div>
     </div>
 </div>

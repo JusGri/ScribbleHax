@@ -4,6 +4,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using Scribble_hax.Helpers.Enums;
 
 namespace Scribble_hax.Controllers.WordManager
 {
@@ -12,11 +13,6 @@ namespace Scribble_hax.Controllers.WordManager
     /// </summary>
     public class WordManager
     {
-        private enum lineAxis
-        {
-            horizontal,
-            vertical
-        }
         private HashSet<string> words;
         private Dictionary<char, int> charsToPoints;
 
@@ -33,11 +29,128 @@ namespace Scribble_hax.Controllers.WordManager
         }
 
         /// <summary>
+        /// Returns all possible words with their respective points for the start of the game, where no letters are placed on the board.
+        /// </summary>
+        /// /// <param name="availableCharacters"></param>
+        /// <param name="boardLayout"></param>
+        /// <returns>>A list of chosen word objects which hold the possible words and the coordinates they can be placed at.</returns>
+        public List<ChosenWord> GetStartingWords(List<char> availableCharacters, Dictionary<(int row, int column), string> boardLayout)
+        {
+            List<ChosenWord> availableWords = new List<ChosenWord>();
+
+            var centralTile = boardLayout.First(tile => tile.Value.Contains("*"));
+
+            var centralRow = new Dictionary<(int row, int column), string>();
+            var centralColumn = new Dictionary<(int row, int column), string>();
+            for (int i = 0; i  < 15; i++)
+            {
+                centralRow.Add((centralTile.Key.row, i), boardLayout[(centralTile.Key.row, i)]);
+
+                centralColumn.Add((i, centralTile.Key.column), boardLayout[(i, centralTile.Key.column)]);
+            }
+
+            //Select words that can be made with given characters.
+            foreach(var word in words)
+            {
+                var wordCanBeUsed = true;
+                var localAvailableChars = new List<char>(availableCharacters);
+                foreach(var character in word)
+                {
+                    if (localAvailableChars.Contains(character))
+                    {
+                        localAvailableChars.Remove(character);
+                    }
+                    else if(localAvailableChars.Contains('*'))
+                    {
+                        localAvailableChars.Remove('*');
+                    }
+                    else
+                    {
+                        wordCanBeUsed = false;
+                        break;
+                    }
+                }
+
+                if (wordCanBeUsed)
+                {
+                    var wordChosen = GetStartingPositionsForWord(word, availableCharacters, centralRow, centralColumn);
+                    availableWords.AddRange(wordChosen);
+                }
+            }
+
+            return availableWords.OrderByDescending(word => word.GetPoints()).ToList();
+        }
+
+        private List<ChosenWord> GetStartingPositionsForWord(string word, List<char> availableCharacters, Dictionary<(int row, int column), string> centralRow, Dictionary<(int row, int column), string> centralColumn)
+        {
+            List<ChosenWord> bestPlacements = new List<ChosenWord>();
+
+            //Get word lowest starting column possible, where the word would still fit on the board and touch the central tile.
+            var rowPossibleStart = centralColumn.Keys.First().column - (word.Length - 1) <= 0 ? 0 : centralColumn.Keys.First().column - (word.Length - 1);
+            //Get word highest starting column possible, where the word would still fit on the board and touch the central tile.
+            var rowPossibleEnd = centralColumn.Keys.First().column + word.Length > 15 ? 15 - word.Length : centralColumn.Keys.First().column;
+            //Check all the positions on the row where the word can be placed for max point value placement.
+            for (int i = rowPossibleStart; i < rowPossibleEnd; i++)
+            {
+                int points = CalculatePoints(word, i, centralRow.ToDictionary(k => k.Key.column, v => v.Value));
+                //If there are already word placements check if the new placement is worth more points
+                if (bestPlacements.Any())
+                {
+                    var currentPoints = bestPlacements.First().GetPoints();
+                    //If the new placement is worth more or same amount of points add it.
+                    if (currentPoints <= points){
+                        //If it's definetly worth more remove other lower placements before adding.
+                        if(currentPoints < points)
+                        {
+                            bestPlacements.Clear();
+                        }
+                        bestPlacements.Add(new ChosenWord(word, (centralRow.Keys.First().row, i), (centralRow.Keys.First().row, i + (word.Length - 1)), points));
+                    }
+                }
+                //If there are no previous word placements just add the word.
+                else
+                {
+                    bestPlacements.Add(new ChosenWord(word, (centralRow.Keys.First().row, i),(centralRow.Keys.First().row, i+ (word.Length-1)), points));
+                }
+
+            }
+
+
+            //Do the same steps for column
+            var columnPossibleStart = centralRow.Keys.First().row - (word.Length - 1) <= 0 ? 0 : centralRow.Keys.First().row - (word.Length - 1);
+            var columnPossibleEnd = centralRow.Keys.First().row + word.Length > 15 ? 15 - word.Length : centralRow.Keys.First().row;
+            for (int i = columnPossibleStart; i < columnPossibleEnd; i++)
+            {
+                int points = CalculatePoints(word, i, centralColumn.ToDictionary(k => k.Key.row, v => v.Value));
+                if (bestPlacements.Any())
+                {
+                    var currentPoints = bestPlacements.First().GetPoints();
+                    if (currentPoints <= points)
+                    {
+                        if (currentPoints < points)
+                        {
+                            bestPlacements.Clear();
+                        }
+                        bestPlacements.Add(new ChosenWord(word, (i, centralColumn.Keys.First().column), (i + (word.Length - 1), centralColumn.Keys.First().column), points));
+                    }
+                }
+                else
+                {
+                    bestPlacements.Add(new ChosenWord(word, (i, centralColumn.Keys.First().column), (i + (word.Length - 1), centralColumn.Keys.First().column), points));
+                }
+
+            }
+
+            return bestPlacements;
+
+        }
+
+        /// <summary>
         /// Returns all possible words with their respective points.
         /// </summary>
         /// <param name="availableCharacters"></param>
         /// <param name="charactersOnTheBoard"></param>
-        /// <returns>A dictionary where words are keys and point that you can get for them are values.</returns>
+        /// <returns>A list of chosen word objects which hold the possible words and the coordinates they can be placed at.</returns>
         public List<ChosenWord> GetAvailableWords(List<char> availableCharacters, Dictionary<(int row,int column), string> charactersOnTheBoard)
         {
             List<ChosenWord> availableWords = new List<ChosenWord>();
@@ -54,7 +167,7 @@ namespace Scribble_hax.Controllers.WordManager
                         charactersOnRow.Add((i, column), charactersOnTheBoard[(i, column)]);
                     }
 
-                    var chosenOnRow = ValidateWord(word, availableCharacters, charactersOnRow, lineAxis.horizontal);
+                    var chosenOnRow = ValidateWord(word, availableCharacters, charactersOnRow, Axis.horizontal);
                     if (chosenOnRow.Any())
                     {
                         availableWords.AddRange(chosenOnRow);
@@ -67,7 +180,7 @@ namespace Scribble_hax.Controllers.WordManager
                         charactersOnColumn.Add((row, i), charactersOnTheBoard[(row, i)]);
                     }
 
-                    var chosenOnColumn = ValidateWord(word, availableCharacters, charactersOnColumn, lineAxis.vertical);
+                    var chosenOnColumn = ValidateWord(word, availableCharacters, charactersOnColumn, Axis.vertical);
                     if (chosenOnColumn.Any())
                     {
                         availableWords.AddRange(chosenOnColumn);
@@ -77,10 +190,10 @@ namespace Scribble_hax.Controllers.WordManager
 
             availableWords = CheckForWordsPerpendicular(charactersOnTheBoard, availableWords);
 
-            return availableWords; 
+            return availableWords.OrderByDescending(word => word.GetPoints()).ToList(); 
         }
 
-        private List<ChosenWord> ValidateWord(string word, List<char> availableCharacters, Dictionary<(int row, int column), string> charactersOnTheLine, lineAxis axis)
+        private List<ChosenWord> ValidateWord(string word, List<char> availableCharacters, Dictionary<(int row, int column), string> charactersOnTheLine, Axis axis)
         {
             var wordFits = new List<ChosenWord>();
 
@@ -98,7 +211,7 @@ namespace Scribble_hax.Controllers.WordManager
                         if (WordFitsBetweenEdges(i, word, match, axis))
                         {
                             (List<char> remainingLetters, int wordStart) matchResult;
-                            if (axis == lineAxis.horizontal)
+                            if (axis == Axis.horizontal)
                             {
                                 matchResult = HandleMatch(wordDeconstructed, i,
                                     new KeyValuePair<int, string>(match.Key.column, match.Value),
@@ -154,7 +267,7 @@ namespace Scribble_hax.Controllers.WordManager
 
                 //If it can be finished add it to the list of fitting words, but no points calculation.
                 ChosenWord chosenWord;
-                if (axis == lineAxis.horizontal)
+                if (axis == Axis.horizontal)
                 {
                     int points = CalculatePoints(word, match.wordStart, charactersOnTheLine.ToDictionary(k => k.Key.column, v => v.Value));
                     chosenWord = new ChosenWord(word, (charactersOnTheLine.First().Key.row, match.wordStart),
@@ -172,9 +285,9 @@ namespace Scribble_hax.Controllers.WordManager
             return wordFits;
         }
 
-        private bool WordFitsBetweenEdges(int matchPosition, string word, KeyValuePair<(int row, int column), string> match, lineAxis axis)
+        private bool WordFitsBetweenEdges(int matchPosition, string word, KeyValuePair<(int row, int column), string> match, Axis axis)
         {
-            if (axis == lineAxis.horizontal)
+            if (axis == Axis.horizontal)
             {
                 if (match.Key.column - matchPosition >= 0 || match.Key.column + ((word.Length - 1) - matchPosition) <= 14)
                 {
@@ -422,6 +535,16 @@ namespace Scribble_hax.Controllers.WordManager
             }
 
             return alteredAvailableWords;
+        }
+
+        /// <summary>
+        /// Checks if a given string is a valid word.
+        /// </summary>
+        /// <param name="word">A string to be checked.</param>
+        /// <returns>True if word is valid</returns>
+        public bool IsValidWord(string word)
+        {
+            return words.Contains(word.ToLower()); 
         }
     }
 }

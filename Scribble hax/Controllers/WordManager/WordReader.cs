@@ -36,7 +36,7 @@ public class WordReader
                 //Won't fit on the board
                 continue;
             }
-            words.Add(line);
+            words.Add(line.ToLower());
         }
 
         return words;

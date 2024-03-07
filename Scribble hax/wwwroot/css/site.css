@@ -21,6 +21,14 @@ body {
   margin-bottom: 60px;
 }
 
+.scribble-game{
+    display: flex;
+}
+
+.scribble-form{
+    padding: 25px;
+}
+
 .scribble-board {
     height: auto;
     width: 530px;
